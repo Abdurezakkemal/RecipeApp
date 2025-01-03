@@ -16,7 +16,45 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   final _auth = FirebaseAuth.instance;
 
+  /// Display a SnackBar with an error message
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  /// Validate user input
+  bool _validateInputs() {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    if (email.isEmpty) {
+      _showErrorSnackBar("Email cannot be empty.");
+      return false;
+    }
+
+    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(email)) {
+      _showErrorSnackBar("Please enter a valid email address.");
+      return false;
+    }
+
+    if (password.isEmpty) {
+      _showErrorSnackBar("Password cannot be empty.");
+      return false;
+    }
+
+    return true;
+  }
+
+  /// Handle user login
   Future<void> _login() async {
+    if (!_validateInputs()) return;
+
     try {
       await _auth.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
@@ -26,10 +64,23 @@ class _LoginScreenState extends State<LoginScreen> {
         context,
         MaterialPageRoute(builder: (_) => const AppMainScreen()),
       );
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'user-not-found':
+          _showErrorSnackBar(
+              "No account found for this email. Please sign up.");
+          break;
+        case 'wrong-password':
+          _showErrorSnackBar("Incorrect password. Please try again.");
+          break;
+        case 'invalid-email':
+          _showErrorSnackBar("Invalid email format. Please check your email.");
+          break;
+        default:
+          _showErrorSnackBar("Login failed: ${e.message}");
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+      _showErrorSnackBar("An unexpected error occurred: $e");
     }
   }
 
@@ -58,7 +109,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisSize: MainAxisSize.min, // Center the Column
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Logo or App Name at the top (Optional)
                     const Text(
                       'Recipe App',
                       style: TextStyle(
@@ -74,15 +124,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: _emailController,
                       decoration: InputDecoration(
                         labelText: 'Email',
-                        labelStyle: TextStyle(color: Colors.white),
+                        labelStyle: const TextStyle(color: Colors.white),
                         filled: true,
                         fillColor: Colors.white.withOpacity(0.8),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
                         ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 15),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -91,15 +141,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: _passwordController,
                       decoration: InputDecoration(
                         labelText: 'Password',
-                        labelStyle: TextStyle(color: Colors.white),
+                        labelStyle: const TextStyle(color: Colors.white),
                         filled: true,
                         fillColor: Colors.white.withOpacity(0.8),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
                         ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 15),
                       ),
                       obscureText: true,
                     ),
@@ -108,9 +158,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ElevatedButton(
                       onPressed: _login,
                       style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.deepOrange, // Button color
-                        padding:
-                            EdgeInsets.symmetric(vertical: 16, horizontal: 50),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 16, horizontal: 50),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),

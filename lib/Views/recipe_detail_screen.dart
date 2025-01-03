@@ -7,7 +7,7 @@ import 'package:recipeapp/Widget/my_icon_button.dart';
 import 'package:recipeapp/Widget/quantity_increment_decrement.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
-
+import 'package:recipeapp/Views/cooking_mode_screen.dart';
 class RecipeDetailScreen extends StatefulWidget {
   final DocumentSnapshot<Object?> documentSnapshot;
   const RecipeDetailScreen({super.key, required this.documentSnapshot});
@@ -25,6 +25,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
         .toList();
     Provider.of<QuantityProvider>(context, listen: false)
         .setBaseIngredientAmounts(baseAmounts);
+        
     super.initState();
   }
 
@@ -184,7 +185,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Infredients",
+                            "Ingredients",
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -295,13 +296,35 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       onPressed: () {},
       label: Row(
         children: [
-          ElevatedButton(
+         ElevatedButton(
             style: ElevatedButton.styleFrom(
-                backgroundColor: kprimaryColor,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 100, vertical: 13),
-                foregroundColor: Colors.white),
-            onPressed: () {},
+              backgroundColor: kprimaryColor,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 100, vertical: 13),
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () {
+              final steps = widget.documentSnapshot['steps'];
+              if (steps == null || (steps as List).isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('No cooking steps available!')),
+                );
+                return;
+              }
+
+              final parsedSteps = (steps as List<dynamic>)
+                  .map((step) => step.toString())
+                  .toList();
+              final totalTime = widget.documentSnapshot['time'] as int;
+              
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CookingModeScreen(steps: parsedSteps,  totalTime:totalTime),
+                  
+                ),
+              );
+            },
             child: const Text(
               "Start Cooking",
               style: TextStyle(
@@ -310,31 +333,12 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
               ),
             ),
           ),
-          const SizedBox(width: 10),
-          IconButton(
-            style: IconButton.styleFrom(
-              shape: CircleBorder(
-                side: BorderSide(
-                  color: Colors.grey.shade300,
-                  width: 2,
-                ),
-              ),
-            ),
-            onPressed: () {
-              provider.toggleFavorite(widget.documentSnapshot);
-            },
-            icon: Icon(
-              provider.isExist(widget.documentSnapshot)
-                  ? Iconsax.heart5
-                  : Iconsax.heart,
-              color: provider.isExist(widget.documentSnapshot)
-                  ? Colors.red
-                  : Colors.black,
-              size: 22,
-            ),
-          ), 
+
         ],
       ),
     );
   }
 }
+
+
+

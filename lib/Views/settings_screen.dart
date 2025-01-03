@@ -10,34 +10,53 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settings = Provider.of<SettingsProvider>(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
         backgroundColor: settings.isDarkMode ? Colors.black : Colors.white,
         foregroundColor: settings.isDarkMode ? Colors.white : Colors.black,
+        elevation: 0,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            // Section Header
+            Text(
               'Preferences',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: theme.textTheme.headlineLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 20),
-            SwitchListTile(
-              title: const Text("Dark Mode"),
-              value: settings.isDarkMode,
-              onChanged: (value) {
-                settings.toggleTheme();
-              },
+
+            // Dark Mode Switch
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: SwitchListTile(
+                title: Text(
+                  "Dark Mode",
+                  style: theme.textTheme.bodyMedium,
+                ),
+                value: settings.isDarkMode,
+                onChanged: (value) {
+                  settings.toggleTheme();
+                },
+              ),
             ),
             const SizedBox(height: 20),
-            const Text(
+
+            // Font Size Slider
+            Text(
               'Font Size',
-              style: TextStyle(fontSize: 16),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             Slider(
               value: settings.fontSize,
@@ -51,24 +70,35 @@ class SettingsScreen extends StatelessWidget {
             ),
             Text(
               'Sample Text',
-              style: TextStyle(fontSize: settings.fontSize),
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontSize: settings.fontSize,
+              ),
             ),
             const Divider(),
+
+            // Account Section
             const SizedBox(height: 20),
-            const Text(
+            Text(
               'Account',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: theme.textTheme.headlineLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 10),
-            ListTile(
-              leading: const Icon(Icons.logout, color: Colors.red),
-              title: const Text(
-                'Logout',
-                style: TextStyle(color: Colors.red),
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
-              onTap: () async {
-                await _logout(context);
-              },
+              child: ListTile(
+                leading: const Icon(Icons.logout, color: Colors.red),
+                title: const Text(
+                  'Logout',
+                  style: TextStyle(color: Colors.red),
+                ),
+                onTap: () async {
+                  await _logout(context);
+                },
+              ),
             ),
           ],
         ),
