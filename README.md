@@ -20,8 +20,8 @@ An Ethiopian food recipe app built with Flutter (Dart) and Firebase to help user
 
     Clone the repository:
 
-git clone https://github.com/Abdurezakkemal/ethiopian-food-recipe-app.git
-cd ethiopian-food-recipe-app
+git clone https://github.com/Abdurezakkemal/RecipeApp.git
+cd RecipeApp
 
 Install dependencies:
 
