@@ -1,16 +1,39 @@
-# recipeapp
+🍽 Ethiopian Food Recipe App
 
-A new Flutter project.
+An Ethiopian food recipe app built with Flutter (Dart) and Firebase to help users explore, save, and follow traditional Ethiopian recipes with ease.
+✨ Features
 
-## Getting Started
+    📜 Browse Recipes – Explore a variety of Ethiopian dishes with detailed instructions.
+    🔍 Search & Filter – Quickly find recipes by name, ingredients, or category.
+    👤 User Authentication – Sign in/sign up using Firebase Authentication.
+    ⭐ Save Favorite Recipes – Bookmark and manage your favorite recipes.
+    ⏳ Step-by-Step Cooking Guide – Follow recipes with a progress tracker.
+    ☁ Cloud Database – Store recipes securely using Firebase Firestore.
 
-This project is a starting point for a Flutter application.
+🛠 Tech Stack
 
-A few resources to get you started if this is your first Flutter project:
+    Flutter (Dart) – Frontend UI development
+    Firebase – Backend services (Firestore, Authentication, Cloud Storage)
+    Provider – State management
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+🚀 Getting Started
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+    Clone the repository:
+
+git clone https://github.com/Abdurezakkemal/ethiopian-food-recipe-app.git
+cd ethiopian-food-recipe-app
+
+Install dependencies:
+
+flutter pub get
+
+Run the app:
+
+    flutter run
+
+📸 Screenshots
+
+(Add screenshots of your app here)
+📜 License
+
+This project is open-source and available under the MIT License.
